@@ -22,3 +22,8 @@ h1 {
     width: 200px;
     margin: 0px auto;
 }
+
+.code {
+    color: brown;
+    /* background-color: aqua; */
+}

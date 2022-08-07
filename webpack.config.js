@@ -1,71 +1,47 @@
-const path = require('path');
-const HTMLWebpackPlugin = require('html-webpack-plugin')
-// const WebpackDevServer = require('webpack-dev-server');
-const {CleanWebpackPlugin} = require('clean-webpack-plugin')
-// const CopyWebpackPlugin = require('copy-webpack-plugin')
+const path = require('path')
+const htmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
-    context: path.resolve(__dirname, 'src'),
-    mode: 'development',
+    mode: 'production',
     entry: {
-        main: './index.js',
-        analytics: './analytics.js'
+        filename: path.resolve(__dirname, 'src/index.js')
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: '[name].[contenthash].js',        
+        filename: '[name][contenthash].js',
+        assetModuleFilename: '[name][ext]',
+        clean: true
     },
-    resolve: {
-        extensions: ['.js', '.json', '.png'],
-        alias: {
-            '@models': path.resolve(__dirname, 'src/models'),
-            '@': path.resolve(__dirname, 'src'),
-        }
-    },
-    optimization: {
-        splitChunks: {
-            chunks: 'all'
-        }
+    performance: {
+        hints: false,
+        maxAssetSize: 512000,
+        maxEntrypointSize: 512000
     },
     devServer: {
-        port: '5555',
+        port: 5555,
+        compress: true,
+        hot: true,
+        static: {
+            directory: path.join(__dirname, 'dist')
+        }
     },
-    plugins: [
-        new HTMLWebpackPlugin({
-            template: './index.html'
-        }),
-        new CleanWebpackPlugin(),
-        // new CopyWebpackPlugin([
-        //     {
-        //             {
-        //                 from: pach.resolve(__dirname, 'src/favicon.ico'),
-        //                 to: path.resolve(__dirname, 'dist')
-        //             }
-        //     }
-        // ])
-    ], 
     module: {
         rules: [
             {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader'],
+                test: /\.scss$/,
+                use: ['style-loader', 'css-loader', 'sass-loader']
             },
             {
-                test: /\.(png|jpg|svg|gif)$/,
+                test: /\.(png|svg|jpg|jpeg|gif)$/i,
                 type: 'asset/resource'
-            },
-            {
-                test: /\.(ttf|woff|woff2|eot)$/,
-                use: ['file-loader']
-            },
-            {
-                test:/\.xml$/,
-                use: ['xml-loader']
-            },
-            {
-                test:/\.csv$/,
-                use: ['csv-loader']
             }
         ]
     },
-};
+    plugins: [
+        new htmlWebpackPlugin({
+            title: 'My Web Page',
+            filename: 'index.html',
+            template: 'src/index.html'
+        })
+    ]
+}
